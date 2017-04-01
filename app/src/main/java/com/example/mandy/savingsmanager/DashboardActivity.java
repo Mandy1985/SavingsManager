@@ -110,7 +110,5 @@ public class DashboardActivity extends AppCompatActivity
         publick void onClic(View v){
             Toast toast= new Toast (AddSavinfItemActivity.this)
             toast.makeText(this,"Clicked,toast.lenth_long).shw()")*/
-        }
-    }
     }
 }
