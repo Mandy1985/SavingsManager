@@ -103,12 +103,4 @@ public class DashboardActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-    private void setupUI() {
-        TextView bankLabel = (TextView) findViewById(R.id.bank_Label);
-        TextView bankInput = (TextView) findViewById(R.id.bank_Input);
-        /*EditText.setonclicklistner(new View.onclickLister()){
-        publick void onClic(View v){
-            Toast toast= new Toast (AddSavinfItemActivity.this)
-            toast.makeText(this,"Clicked,toast.lenth_long).shw()")*/
-    }
 }
