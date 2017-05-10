@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.mandy.savingsmanager.AddSavingsActivity">
+    android:layout_margin="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
+    tools:context="com.example.mandy.savingsmanager.activities.AddSavingsActivity">
 
 
     <ScrollView
@@ -14,167 +15,156 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            tools:layout_editor_absoluteX="8dp"
-            tools:layout_editor_absoluteY="8dp">
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                tools:layout_editor_absoluteX="8dp"
-                tools:layout_editor_absoluteY="8dp">
+                android:gravity="center_vertical"
+                android:layout_marginBottom="@dimen/activity_vertical_margin">
 
                 <TextView
-                    android:id="@+id/bank_Label"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/txt_bank_name"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/activity_horizontal_margin"
-                    android:layout_weight="1"
-                    android:orientation="horizontal"
-                    android:text="Bank" />
+                    android:layout_weight="2"
+                    android:text="Bank"
+                    android:textSize="18sp"/>
 
                 <EditText
                     android:id="@+id/bank_Input"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/activity_horizontal_margin"
-                    android:layout_weight="1"
-                    android:orientation="horizontal" />
+                    android:layout_weight="3"
+                    android:inputType="textCapWords|textNoSuggestions" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                tools:layout_editor_absoluteX="8dp"
-                tools:layout_editor_absoluteY="8dp">
+                android:layout_marginBottom="@dimen/activity_vertical_margin"
+                android:gravity="center_vertical">
 
                 <TextView
-                    android:id="@+id/start_Date_Label"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/activity_horizontal_margin"
-                    android:layout_weight="1"
-                    android:orientation="horizontal"
-                    android:text="Start Date" />
+                    android:layout_weight="2"
+                    android:text="Start Date"
+                    android:textSize="18sp"/>
 
                 <EditText
                     android:id="@+id/start_Date_Input"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/activity_horizontal_margin"
-                    android:layout_weight="1"
-                    android:orientation="horizontal"
-                    android:onClick="showTimePickerDialog" />
+                    android:layout_weight="3"
+                    android:inputType="none" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                tools:layout_editor_absoluteX="8dp"
-                tools:layout_editor_absoluteY="8dp">
+                android:layout_marginBottom="@dimen/activity_vertical_margin"
+                android:gravity="center_vertical">
 
                 <TextView
                     android:id="@+id/end_Date_Label"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/activity_horizontal_margin"
-                    android:layout_weight="1"
-                    android:orientation="horizontal"
-                    android:text="End Date" />
+                    android:layout_margin="0dp"
+                    android:layout_weight="2"
+                    android:text="End Date"
+                    android:textSize="18sp"/>
 
                 <EditText
                     android:id="@+id/end_Date_Input"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/activity_horizontal_margin"
-                    android:layout_weight="1"
-                    android:orientation="horizontal" />
+                    android:layout_weight="3"
+                    android:inputType="none"/>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                tools:layout_editor_absoluteX="8dp"
-                tools:layout_editor_absoluteY="8dp">
+                android:gravity="center_vertical"
+                android:layout_marginBottom="@dimen/activity_vertical_margin">
 
                 <TextView
                     android:id="@+id/amount_Label"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/activity_horizontal_margin"
-                    android:layout_weight="1"
-                    android:orientation="horizontal"
-                    android:text="Amount" />
+                    android:layout_weight="2"
+                    android:text="Amount"
+                    android:textSize="18sp"/>
 
                 <EditText
                     android:id="@+id/amount_Input"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/activity_horizontal_margin"
-                    android:layout_weight="1"
-                    android:orientation="horizontal" />
+                    android:layout_weight="3"
+                    android:inputType="numberDecimal" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                tools:layout_editor_absoluteX="8dp"
-                tools:layout_editor_absoluteY="8dp">
+                android:layout_marginBottom="@dimen/activity_vertical_margin"
+                android:gravity="center_vertical">
 
                 <TextView
                     android:id="@+id/annualized_Yield_Label"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/activity_horizontal_margin"
-                    android:layout_weight="1"
-                    android:orientation="horizontal"
-                    android:text="Annualized Yield" />
+                    android:layout_weight="2"
+                    android:text="Annualized Yield"
+                    android:textSize="18sp"/>
 
                 <EditText
                     android:id="@+id/annualized_Yield_Input"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/activity_horizontal_margin"
-                    android:layout_weight="1"
-                    android:orientation="horizontal" />
+                    android:layout_weight="3"
+                    android:inputType="numberDecimal"/>
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                tools:layout_editor_absoluteX="8dp"
-                tools:layout_editor_absoluteY="8dp">
+                android:layout_marginBottom="@dimen/activity_vertical_margin"
+                android:gravity="center_vertical">
 
                 <TextView
                     android:id="@+id/expected_Interest_Label"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/activity_horizontal_margin"
-                    android:layout_weight="1"
-                    android:orientation="horizontal"
-                    android:text="Expected Interest" />
+                    android:layout_weight="2"
+                    android:text="Expected Interest"
+                    android:textSize="18sp"/>
 
                 <EditText
                     android:id="@+id/expected_Interest_Input"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/activity_horizontal_margin"
-                    android:layout_weight="1"
-                    android:orientation="horizontal" />
+                    android:layout_weight="3" />
             </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            tools:layout_editor_absoluteX="8dp"
-            tools:layout_editor_absoluteY="8dp">
+            android:layout_marginBottom="@dimen/activity_vertical_margin">
             <Button
                 android:id="@+id/cancel_Button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:onClick="onCancelClicked"
                 android:text="Cancel"
                 android:visibility="visible" />
 
@@ -184,6 +174,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@color/colorAccent"
+                android:onClick="onSaveClicked"
                 android:text="Save"
                 android:visibility="visible" />
         </LinearLayout>

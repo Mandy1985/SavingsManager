@@ -6,12 +6,12 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:launchMode="singleTop"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:launchMode="singleTop">
+        android:theme="@style/AppTheme">
         <activity
-            android:name=".DashboardActivity"
+            android:name=".activities.DashboardActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -20,13 +20,21 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AddSavingsActivity">
+        <activity
+            android:name=".activities.AddSavingsActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <provider
+            android:name=".data.SavingsContentProvider"
+            android:authorities="com.example.mandy.savingsmanager.provider"
+            android:enabled="true"
+            android:exported="false" ></provider>
+
     </application>
 
 </manifest>
