@@ -29,7 +29,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
-                    android:text="Bank"
+                    android:text="@string/bank_name"
                     android:textSize="18sp"/>
 
                 <EditText
@@ -51,7 +51,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
-                    android:text="Start Date"
+                    android:text="@string/start_date"
                     android:textSize="18sp"/>
 
                 <EditText
@@ -70,12 +70,11 @@
                 android:gravity="center_vertical">
 
                 <TextView
-                    android:id="@+id/end_Date_Label"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_margin="0dp"
                     android:layout_weight="2"
-                    android:text="End Date"
+                    android:text="@string/end_date"
                     android:textSize="18sp"/>
 
                 <EditText
@@ -121,7 +120,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
-                    android:text="Annualized Yield"
+                    android:text="@string/annualized_yield"
                     android:textSize="18sp"/>
 
                 <EditText
@@ -144,7 +143,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
-                    android:text="Expected Interest"
+                    android:text="@string/expected_interest"
                     android:textSize="18sp"/>
 
                 <EditText
@@ -165,7 +164,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:onClick="onCancelClicked"
-                android:text="Cancel"
+                android:text="@string/cancel"
                 android:visibility="visible" />
 
             <Button
@@ -175,7 +174,7 @@
                 android:layout_weight="1"
                 android:background="@color/colorAccent"
                 android:onClick="onSaveClicked"
-                android:text="Save"
+                android:text="@string/save"
                 android:visibility="visible" />
         </LinearLayout>
         </LinearLayout>

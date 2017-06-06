@@ -1,7 +1,12 @@
 package com.example.mandy.savingsmanager.activities;
 
+import android.app.LoaderManager;
+import android.content.Context;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -13,7 +18,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
+import android.widget.AdapterView;
+import android.widget.CursorAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -21,21 +27,23 @@ import android.widget.TextView;
 import com.example.mandy.savingsmanager.R;
 import com.example.mandy.savingsmanager.data.SavingsBean;
 import com.example.mandy.savingsmanager.data.SavingsContentProvider;
+import com.example.mandy.savingsmanager.data.SavingsItemEntry;
+import com.example.mandy.savingsmanager.utils.Constants;
 import com.example.mandy.savingsmanager.utils.Utils;
-
-import java.util.ArrayList;
-import java.util.Date;
+import com.example.mandy.savingsmanager.manager.DataManager;
+import com.example.mandy.savingsmanager.manager.AlarmsManager;
 
 import java.util.ArrayList;
 import java.util.Date;
 
 public class DashboardActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, LoaderManager.LoaderCallbacks<Cursor> {
 
-    private ListView mLv_savings;
-    private Myadpter mMyadpter;
+    private ListView mSavingsItemListView;
+    private SavingsItemListAdapter mListAdapter;
     ArrayList<SavingsBean> mSavingsBeanList = new ArrayList<>();
     private ProgressBar mProgressBar;
+    private Date mNextDueSavingsDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,12 +71,12 @@ public class DashboardActivity extends AppCompatActivity
 
         initViews();
 
+        getLoaderManager().initLoader(0, null, this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        initData();
     }
 
     @Override
@@ -114,29 +122,69 @@ public class DashboardActivity extends AppCompatActivity
         startActivity(intent);
     }
 
+    /**
+     * Start edit savings item screen
+     */
+    private void startEditSavingsItemScreen(SavingsBean savings) {
+        Intent intent = new Intent(this, DashboardActivity.class);
+        intent.putExtra(Constants.INTENT_EXTRA_SAVINGS_ITEM_PARCEL, savings);
+        startActivity(intent);
+    }
 
     private void initViews() {
 
-        mLv_savings = (ListView) findViewById(R.id.lv_savings);
+        mSavingsItemListView = (ListView) findViewById(R.id.lv_savings);
         mProgressBar = (ProgressBar) findViewById(R.id.pb);
-        mLv_savings.setEmptyView(mProgressBar);
-        mMyadpter = new Myadpter();
+        mSavingsItemListView.setEmptyView(mProgressBar);
+
+        mListAdapter = new SavingsItemListAdapter(this, null, true);
+        mSavingsItemListView.setAdapter(mListAdapter);
+
+        mSavingsItemListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                SavingsBean savings = mSavingsBeanList.get(position);
+                startEditSavingsItemScreen(savings);
+            }
+        });
+
 
     }
-    private void initData() {
+
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        // This is called when a new Loader needs to be created.  This
+        // sample only has one Loader, so we don't care about the ID.
+        // First, pick the base URI to use depending on whether we are
+        // currently filtering.
+        return new CursorLoader(this, SavingsContentProvider.CONTENT_URI,
+                null, null, null, "_id asc");
+    }
+
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        // Swap the new cursor in.  (The framework will take care of closing the
+        // old cursor once we return.)
+
+        initData(data);
+        mListAdapter.swapCursor(data);
+
+    }
+
+    private void initData(Cursor cursor) {
 
         if(mSavingsBeanList !=null){
             mSavingsBeanList.clear();
         }
-        Cursor cursor = getContentResolver().query(SavingsContentProvider.CONTENT_URI, null, null, null, "_id asc", null);
-        while(cursor.moveToNext()){
+
+        while (cursor != null && cursor.moveToNext()) {
             SavingsBean savingsBean = new SavingsBean();
-            String bankName = cursor.getString(cursor.getColumnIndex("bank_name"));
-            String startDate = cursor.getString(cursor.getColumnIndex("start_date"));
-            String endDate = cursor.getString(cursor.getColumnIndex("end_date"));
-            String amount = cursor.getString(cursor.getColumnIndex("amount"));
-            String yield = cursor.getString(cursor.getColumnIndex("yield"));
-            String interest = cursor.getString(cursor.getColumnIndex("interest"));
+            long id = cursor.getLong(cursor.getColumnIndex(SavingsItemEntry._ID));
+            String bankName = cursor.getString(cursor.getColumnIndex(SavingsItemEntry.COLUMN_NAME_BANK_NAME));
+            long startDate = cursor.getLong(cursor.getColumnIndex(SavingsItemEntry.COLUMN_NAME_START_DATE));
+            long endDate = cursor.getLong(cursor.getColumnIndex(SavingsItemEntry.COLUMN_NAME_END_DATE));
+            float amount = cursor.getFloat(cursor.getColumnIndex(SavingsItemEntry.COLUMN_NAME_AMOUNT));
+            float yield = cursor.getFloat(cursor.getColumnIndex(SavingsItemEntry.COLUMN_NAME_YIELD));
+            float interest = cursor.getFloat(cursor.getColumnIndex(SavingsItemEntry.COLUMN_NAME_INTEREST));
+            savingsBean.setId(id);
             savingsBean.setBankName(bankName);
             savingsBean.setStartDate(startDate);
             savingsBean.setEndDate(endDate);
@@ -145,73 +193,77 @@ public class DashboardActivity extends AppCompatActivity
             savingsBean.setInterest(interest);
             mSavingsBeanList.add(savingsBean);
         }
-//        Log.d("xiangxiang","个数："+mSavingsBeanList.size());
-//
-//        for(int i=0;i<mSavingsBeanList.size();i++){
-//            Log.d("xiangxiang",mSavingsBeanList.get(i).toString());
-//        }
-
-        mLv_savings.setAdapter(mMyadpter);
 
 
-    }
-
-
-    class Myadpter extends BaseAdapter{
-
-        @Override
-        public int getCount() {
-            return mSavingsBeanList.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return mSavingsBeanList.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            ViewHolder viewHolder = null;
-            if(convertView == null){
-                convertView = getLayoutInflater().inflate(R.layout.item_layout,null);
-                viewHolder = new ViewHolder();
-                viewHolder.bankName = (TextView) convertView.findViewById(R.id.tv_bank_name);
-                viewHolder.amount = (TextView) convertView.findViewById(R.id.tv_account_amount);
-                viewHolder.startTime = (TextView) convertView.findViewById(R.id.tv_start_time);
-                viewHolder.endTime = (TextView) convertView.findViewById(R.id.tv_end_time);
-                viewHolder.yield = (TextView) convertView.findViewById(R.id.tv_yield);
-                viewHolder.interest = (TextView) convertView.findViewById(R.id.tv_interest);
-                convertView.setTag(viewHolder);
-            }else{
-                viewHolder = (ViewHolder) convertView.getTag();
+        if (!Utils.isNullOrEmpty(mSavingsBeanList)) {
+            mNextDueSavingsDate = DataManager.getNextDueSavingsItemDate(mSavingsBeanList);
+            if (mNextDueSavingsDate != null) {
+                // schedule an alarm
+                AlarmsManager.scheduleAlarm(this, mNextDueSavingsDate);
             }
-
-            SavingsBean savingsBean = mSavingsBeanList.get(position);
-            viewHolder.bankName.setText(savingsBean.getBankName());
-            viewHolder.amount.setText(savingsBean.getAmount());
-            viewHolder.startTime.setText(Utils.formatDate(new Date(Long.parseLong(savingsBean.getStartDate())),"yyyy-MM-dd"));
-            viewHolder.endTime.setText(Utils.formatDate(new Date(Long.parseLong(savingsBean.getEndDate())),"yyyy-MM-dd"));
-            viewHolder.yield.setText(savingsBean.getYield());
-            viewHolder.interest.setText(savingsBean.getInterest());
-            return convertView;
         }
 
+    }
 
-        class ViewHolder{
+    public void onLoaderReset(Loader<Cursor> loader) {
+        // This is called when the last Cursor provided to onLoadFinished()
+        // above is about to be closed.  We need to make sure we are no
+        // longer using it.
+        if (mSavingsBeanList != null) {
+            mSavingsBeanList.clear();
+        }
+        mListAdapter.swapCursor(null);
+    }
 
-            TextView bankName;
-            TextView amount;
-            TextView startTime;
-            TextView endTime;
-            TextView yield;
-            TextView interest;
+    private class SavingsItemListAdapter extends CursorAdapter {
 
+        public SavingsItemListAdapter(Context context, Cursor c, boolean autoRequery){
+            super(context, c, autoRequery);
+        }
+
+        @Override
+        public View newView(Context context, Cursor cursor, ViewGroup parent){
+            return getLayoutInflater().inflate(R.layout.item_layout, null);
+        }
+
+        @Override
+        public void bindView(View view, Context context, Cursor cursor) {
+
+            String bankName = cursor.getString(cursor.getColumnIndex(SavingsItemEntry.COLUMN_NAME_BANK_NAME));
+            long startDate = cursor.getLong(cursor.getColumnIndex(SavingsItemEntry.COLUMN_NAME_START_DATE));
+            long endDate = cursor.getLong(cursor.getColumnIndex(SavingsItemEntry.COLUMN_NAME_END_DATE));
+            float amount = cursor.getFloat(cursor.getColumnIndex(SavingsItemEntry.COLUMN_NAME_AMOUNT));
+            float yield = cursor.getFloat(cursor.getColumnIndex(SavingsItemEntry.COLUMN_NAME_YIELD));
+            float interest = cursor.getFloat(cursor.getColumnIndex(SavingsItemEntry.COLUMN_NAME_INTEREST));
+
+            TextView bankNameTxt = (TextView) view.findViewById(R.id.tv_bank_name);
+            TextView amountTxt = (TextView) view.findViewById(R.id.tv_account_amount);
+            TextView startTimeTxt = (TextView) view.findViewById(R.id.tv_start_time);
+            TextView endTimeTxt = (TextView) view.findViewById(R.id.tv_end_time);
+            TextView yieldTxt = (TextView) view.findViewById(R.id.tv_yield);
+            TextView interestTxt = (TextView) view.findViewById(R.id.tv_interest);
+
+
+            bankNameTxt.setText(bankName);
+            amountTxt.setText(Utils.formatMoney(amount));
+            startTimeTxt.setText(Utils.formatDate(startDate));
+            endTimeTxt.setText(Utils.formatDate(endDate));
+            yieldTxt.setText(getString(R.string.formatted_yield, yield));
+            interestTxt.setText(Utils.formatMoney(interest));
+
+            // Date color
+            if (Utils.isToday(endDate)) {
+                // Is today
+                endTimeTxt.setTextColor(Color.BLUE);
+            } else if (endDate < new Date().getTime()) {
+                // Before today
+                endTimeTxt.setTextColor(Color.LTGRAY);
+            } else if (mNextDueSavingsDate != null
+                    && endDate == mNextDueSavingsDate.getTime()) {
+            // Next due date
+            endTimeTxt.setTextColor(Color.RED);
+            }
         }
     }
 
-    }
+}

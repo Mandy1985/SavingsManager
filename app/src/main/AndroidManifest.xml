@@ -33,7 +33,18 @@
             android:name=".data.SavingsContentProvider"
             android:authorities="com.example.mandy.savingsmanager.provider"
             android:enabled="true"
-            android:exported="false" ></provider>
+            android:exported="false" >
+
+        </provider>
+
+        <receiver
+            android:name=".receivers.SavingsManagerReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.example.mandy.savingsmanager.action.DUE_SAVINGS_ITEM_ALARM"/>
+            </intent-filter>
+        </receiver>
 
     </application>
 

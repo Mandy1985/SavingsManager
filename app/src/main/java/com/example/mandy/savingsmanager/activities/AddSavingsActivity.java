@@ -12,12 +12,14 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
-import com.example.mandy.savingsmanager.data.SavingsContentProvider;
 
 import com.example.mandy.savingsmanager.R;
+import com.example.mandy.savingsmanager.data.SavingsBean;
+import com.example.mandy.savingsmanager.data.SavingsContentProvider;
 import com.example.mandy.savingsmanager.data.SavingsItemEntry;
 import com.example.mandy.savingsmanager.utils.Constants;
 import com.example.mandy.savingsmanager.utils.Utils;
@@ -42,11 +44,14 @@ public class AddSavingsActivity extends AppCompatActivity {
     private float mAmount;
     private float mYield;
     private float mInterest;
+    private SavingsBean mSavingsBean;
+    private boolean mEditMode = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_savings);
+        setupUI();
     }
 
     private void setupUI() {
@@ -70,7 +75,9 @@ public class AddSavingsActivity extends AppCompatActivity {
         startDateInput.setOnFocusChangeListener(new View.OnFocusChangeListener(){
             @Override
             public void onFocusChange (View v, boolean hasFocus){
+                Toast.makeText(getApplicationContext(),"onFocusChange",Toast.LENGTH_SHORT).show();
                 if (hasFocus){
+                    Toast.makeText(getApplicationContext(),"onFocusChange",Toast.LENGTH_SHORT).show();
                     showDatePicker((EditText) v, true);
                 }
             }
@@ -101,6 +108,32 @@ public class AddSavingsActivity extends AppCompatActivity {
                 }
             }
         });
+
+        mSavingsBean = getIntent().getParcelableExtra(Constants.INTENT_EXTRA_SAVINGS_ITEM_PARCEL);
+        if (mSavingsBean != null) {
+            // set data to UI
+            bankInput.setText(mSavingsBean.getBankName());
+            startDateInput.setText(Utils.formatDate(mSavingsBean.getStartDate()));
+            endDateInput.setText(Utils.formatDate(mSavingsBean.getEndDate()));
+            amountInput.setText(Utils.formatFloat(mSavingsBean.getAmount()));
+            annualizedYieldInput.setText(Utils.formatFloat(mSavingsBean.getYield()));
+            expectedInterestInput.setText(Utils.formatFloat(mSavingsBean.getInterest()));
+
+            // update the buttons
+            ((Button) findViewById(R.id.save_Button)).setText(R.string.update);
+            ((Button) findViewById(R.id.cancel_Button)).setText(R.string.delete);
+
+            mEditMode = true;
+            // update the data in this screen
+            mStartDate = new Date(mSavingsBean.getStartDate());
+            mEndDate = new Date(mSavingsBean.getEndDate());
+            mAmount = mSavingsBean.getAmount();
+            mYield = mSavingsBean.getYield();
+            mInterest = mSavingsBean.getInterest();
+            Log.d(Constants.LOG_TAG, "Edit mode, displayed existing savings item:");
+            Log.d(Constants.LOG_TAG, mSavingsBean.toString());
+
+        }
     }
 
     /**

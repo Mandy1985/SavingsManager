@@ -46,13 +46,17 @@ public class SavingsContentProvider extends ContentProvider {
 
         // Insert the new row, returning the primary key value of the new row
         long newRowId = mDatabase.insert(TABLE_NAME, null, values);
+        getContext().getContentResolver().notifyChange(uri, null);
         return uri;
     }
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         // Implement this to handle requests to delete one or more rows.
-        throw new UnsupportedOperationException("Not yet implemented");
+        mDatabase = mOpenHelper.getWritableDatabase();
+        int rowID = mDatabase.delete(TABLE_NAME, selection, selectionArgs);
+        getContext().getContentResolver().notifyChange(uri, null);
+        return rowID;
     }
 
     @Override
@@ -68,13 +72,21 @@ public class SavingsContentProvider extends ContentProvider {
         mDatabase =  mOpenHelper.getReadableDatabase();
         Cursor cursor = mDatabase.query(TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
 
-        return cursor!=null?cursor:null;
+        if (cursor != null) {
+            cursor.setNotificationUri(getContext().getContentResolver(), uri);
+            return cursor;
+        }else{
+            return null;
+        }
     }
 
     @Override
     public int update(Uri uri, ContentValues values, String selection,
                       String[] selectionArgs) {
         // TODO: Implement this to handle requests to update one or more rows.
-        throw new UnsupportedOperationException("Not yet implemented");
+        mDatabase = mOpenHelper.getWritableDatabase();
+        int rowID = mDatabase.update(TABLE_NAME, values, selection, selectionArgs);
+        getContext().getContentResolver().notifyChange(uri, null);
+        return rowID;
     }
 }
