@@ -237,7 +237,18 @@ public class AddSavingsActivity extends AppCompatActivity {
      * @param view the cancel button
      */
     public void onCancelClicked(View view) {
-        onBackPressed();
+
+        if(mEditMode){
+            //remove the item from database
+            getContentResolver().delete(SavingsContentProvider.CONTENT_URI, SavingsItemEntry._ID + "=" + mSavingsBean.getId(), null);
+            Log.d(Constants.LOG_TAG, "Edit Mode, delete existing savings item:");
+            Log.d(Constants.LOG_TAG, mSavingsBean.toString());
+            //Go back to Dashboard
+            Utils.gotoDashBoard(this);
+            finish();
+        }else{
+            finish();
+        }
     }
 
     /**
