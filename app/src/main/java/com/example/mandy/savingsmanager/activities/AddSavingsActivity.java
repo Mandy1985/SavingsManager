@@ -3,7 +3,6 @@ package com.example.mandy.savingsmanager.activities;
 import android.app.DatePickerDialog;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -259,15 +258,23 @@ public class AddSavingsActivity extends AppCompatActivity {
             values.put(SavingsItemEntry.COLUMN_NAME_END_DATE, mEndDate.getTime());
             values.put(SavingsItemEntry.COLUMN_NAME_INTEREST, mInterest);
 
-            // Save the data into database by ContentProvider
-            getContentResolver().insert(
-                    SavingsContentProvider.CONTENT_URI,
-                    values
-            );
-
+            if (mEditMode){
+                //Update the data into database by ContentProvider
+                getContentResolver().update(SavingsContentProvider.CONTENT_URI, values,
+                        SavingsItemEntry._ID + "=" + mSavingsBean.getId(), null);
+                Log.d(Constants.LOG_TAG, "Edit mode, updated existing savings item: " + mSavingsBean.getId());
+            }else {
+                // Save the data into database by ContentProvider
+                getContentResolver().insert(
+                        SavingsContentProvider.CONTENT_URI,
+                        values
+                );
+            }
             // Go back to dashboard
-            Intent intent = new Intent(this, DashboardActivity.class);
-            startActivity(intent);
+            //Intent intent = new Intent(this, DashboardActivity.class);
+            //startActivity(intent);
+            Utils.gotoDashBoard(this);
+            finish();
         } else {
             Toast.makeText(this, R.string.missing_savings_information, Toast.LENGTH_LONG).show();
         }

@@ -28,10 +28,10 @@ import com.example.mandy.savingsmanager.R;
 import com.example.mandy.savingsmanager.data.SavingsBean;
 import com.example.mandy.savingsmanager.data.SavingsContentProvider;
 import com.example.mandy.savingsmanager.data.SavingsItemEntry;
+import com.example.mandy.savingsmanager.manager.AlarmsManager;
+import com.example.mandy.savingsmanager.manager.DataManager;
 import com.example.mandy.savingsmanager.utils.Constants;
 import com.example.mandy.savingsmanager.utils.Utils;
-import com.example.mandy.savingsmanager.manager.DataManager;
-import com.example.mandy.savingsmanager.manager.AlarmsManager;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -44,6 +44,7 @@ public class DashboardActivity extends AppCompatActivity
     ArrayList<SavingsBean> mSavingsBeanList = new ArrayList<>();
     private ProgressBar mProgressBar;
     private Date mNextDueSavingsDate;
+    private float totalInterest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,7 +127,7 @@ public class DashboardActivity extends AppCompatActivity
      * Start edit savings item screen
      */
     private void startEditSavingsItemScreen(SavingsBean savings) {
-        Intent intent = new Intent(this, DashboardActivity.class);
+        Intent intent = new Intent(this, AddSavingsActivity.class);
         intent.putExtra(Constants.INTENT_EXTRA_SAVINGS_ITEM_PARCEL, savings);
         startActivity(intent);
     }
@@ -166,7 +167,6 @@ public class DashboardActivity extends AppCompatActivity
 
         initData(data);
         mListAdapter.swapCursor(data);
-
     }
 
     private void initData(Cursor cursor) {
@@ -191,9 +191,15 @@ public class DashboardActivity extends AppCompatActivity
             savingsBean.setAmount(amount);
             savingsBean.setYield(yield);
             savingsBean.setInterest(interest);
+            //sum up the total interest
+            totalInterest += interest;
+
             mSavingsBeanList.add(savingsBean);
         }
 
+        //Set value to totalInterest text view
+        TextView interestAmountTxt = (TextView) findViewById(R.id.total_Interest);
+        interestAmountTxt.setText("Total Interest:" + Utils.formatMoney(totalInterest));
 
         if (!Utils.isNullOrEmpty(mSavingsBeanList)) {
             mNextDueSavingsDate = DataManager.getNextDueSavingsItemDate(mSavingsBeanList);
@@ -243,13 +249,13 @@ public class DashboardActivity extends AppCompatActivity
             TextView yieldTxt = (TextView) view.findViewById(R.id.tv_yield);
             TextView interestTxt = (TextView) view.findViewById(R.id.tv_interest);
 
-
             bankNameTxt.setText(bankName);
             amountTxt.setText(Utils.formatMoney(amount));
             startTimeTxt.setText(Utils.formatDate(startDate));
             endTimeTxt.setText(Utils.formatDate(endDate));
             yieldTxt.setText(getString(R.string.formatted_yield, yield));
             interestTxt.setText(Utils.formatMoney(interest));
+
 
             // Date color
             if (Utils.isToday(endDate)) {
@@ -265,5 +271,5 @@ public class DashboardActivity extends AppCompatActivity
             }
         }
     }
-
 }
+
